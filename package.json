@@ -1,0 +1,11 @@
+{
+  "name": "taskflow",
+  "private": true,
+  "scripts": {
+    "install:client": "cd client && pnpm install",
+    "install:server": "cd server && pnpm install",
+    "dev:client": "cd client && pnpm run dev",
+    "dev:server": "cd server && pnpm run dev",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\""
+  }
+}
