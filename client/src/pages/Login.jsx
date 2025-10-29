@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { register } from "../services/authService.js";
+import { login } from "../services/authService.js";
 import { isAxiosError } from "axios";
+import { useNavigate } from 'react-router-dom'
 
-export default function Register() {
+export default function Login() {
+    const navigate = useNavigate()
 
     const [formData, setFormData] = useState({
-        name: '',
         email: '',
         password: ''
     })
@@ -18,37 +19,37 @@ export default function Register() {
         setError('')
         setSuccess('')
 
-        const name = formData.name.trim()
         const email = formData.email.trim()
         const password = formData.password
 
-        if (!name || !email || !password) {
+        if (!email || !password) {
             setError('All fields are required')
             return
         }
 
-        if (password.length < 6) {
-            setError('Password must have 6 characters at least')
-            return
-        }
-
         setLoading(true)
+
         try {
-            const response = await register(name, email, password)
+            const response = await login(email, password)
 
-            if (response?.status === 201) {
-                setSuccess(response?.data?.message ?? 'Registered successfully')
-                setFormData({ name: '', email: '', password: '' })
-                return
-            }
+            localStorage.setItem('token', response.data.token)
+            localStorage.setItem('user', JSON.stringify(response.data.user))
 
-            setError(response?.message ?? 'Error in the registration process. Please try again.')
+            setSuccess('Signed in. Redirecting to home')
+            setTimeout(() => navigate('/'), 1000)
+
         } catch (error) {
             if (isAxiosError(error)) {
                 const status = error.response?.status
                 const apiMessage = error.response?.data?.message
 
-                setError(`${apiMessage} (${status})`)
+                if (status !== 500) {
+                    setError(apiMessage)
+                } else {
+                    setError('Server error. Please try again later')
+                }
+            } else {
+                setError('Network error. Please check your connection')
             }
         } finally {
             setLoading(false)
@@ -57,15 +58,8 @@ export default function Register() {
 
     return (
         <div>
-            <h2>Register</h2>
+            <h2>Login</h2>
             <form onSubmit={handleSubmit}>
-                <input
-                    id="name"
-                    required
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                />
                 <input
                     id="email"
                     required
@@ -77,7 +71,6 @@ export default function Register() {
                     id="password"
                     required
                     type="password"
-                    minLength={6}
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 />
@@ -86,10 +79,10 @@ export default function Register() {
                     {success && <p style={{ color: "green" }}>{success}</p>}
                 </div>
                 <button type="submit" disabled={loading}>
-                    {loading ? 'Registering...' : 'Sign up'}
+                    {loading ? 'Signing in...' : 'Sign in'}
                 </button>
                 <p>
-                    Already have an account? <a href="/login">Login here</a>
+                    Don't have an account? <a href="/register">Register here</a>
                 </p>
             </form>
         </div>

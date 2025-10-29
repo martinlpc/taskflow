@@ -6,6 +6,11 @@ import authRoutes from './routes/auth.routes.js';
 const app = express()
 const PORT = process.env.PORT || 5000
 
+if (!process.env.JWT_SECRET) {
+    console.error('FATAL ERROR: JWT secret is not configured')
+    process.exit(1)
+}
+
 // vvv MIDDLEWARES vvv
 app.use(express.json())
 app.use(cors({
