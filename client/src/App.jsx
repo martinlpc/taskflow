@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import Register from "./pages/Register"
 import Login from "./pages/Login"
 import Home from "./pages/Home"
+import Tasks from "./pages/Tasks"
 import PrivateRoute from "./pages/PrivateRoute"
 import PublicRoute from "./pages/PublicRoute"
 
@@ -37,6 +38,14 @@ function App() {
           }
         />
 
+        <Route
+          path="/tasks"
+          element={
+            <PrivateRoute>
+              <Tasks />
+            </PrivateRoute>
+          }
+        />
         {/* Route 404 - redirects if logged or not */}
         <Route
           path="*"
