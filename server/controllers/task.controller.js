@@ -26,3 +26,15 @@ export const createTask = async (req, res) => {
         })
     }
 }
+
+export const getTasks = async (req, res) => {
+    try {
+        const tasks = await Task.find({ userId: req.userId })
+            .sort({ createdAt: -1 })
+
+        return res.status(200).json({ tasks })
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+        return res.status(500).json({ message: 'Error fetching tasks' })
+    }
+}
