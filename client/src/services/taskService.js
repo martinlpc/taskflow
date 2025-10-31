@@ -15,3 +15,12 @@ export const createTask = async (title, description) => {
         }
     )
 }
+
+export const getTasks = async () => {
+    const token = localStorage.getItem('token')
+
+    return await axios.get(
+        `${API_URL}/tasks`, {
+        headers: { Authorization: `Bearer ${token}` }
+    })
+}
