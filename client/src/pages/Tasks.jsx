@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createTask, getTasks } from "../services/taskService.js";
+import { createTask, getTasks, updateTask } from "../services/taskService.js";
 import TaskCard from "../components/TaskCard.jsx"
 
 export default function Tasks() {
@@ -8,6 +8,7 @@ export default function Tasks() {
     const [success, setSuccess] = useState('')
     const [loading, setLoading] = useState(false)
     const [tasks, setTasks] = useState([])
+    const [editingTask, setEditingTask] = useState(null)
 
     useEffect(() => {
         fetchTasks()
@@ -23,6 +24,20 @@ export default function Tasks() {
         }
     }
 
+    const handleEdit = (task) => {
+        setEditingTask(task)
+        setFormData({
+            title: task.title,
+            description: task.description || ''
+        })
+    }
+
+    const handleCancel = () => {
+        setEditingTask(null)
+        setFormData({ title: '', description: '' })
+        setError('')
+        setSuccess('')
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -39,11 +54,19 @@ export default function Tasks() {
 
         setLoading(true)
         try {
-            await createTask(title, description)
+            if (editingTask) {
+                await updateTask(editingTask._id, { title, description, status: editingTask.status, priority: editingTask.priority })
+                setSuccess('Task updated!')
+            }
+            else {
+                await createTask(title, description)
+                setSuccess('Task created!')
+            }
 
-            setSuccess('Task created successfully!')
             setFormData({ title: '', description: '' })
+            setEditingTask(null)
             fetchTasks()
+
         } catch (error) {
             if (error.response) {
                 setError(error.response?.data?.message || 'Error creating task')
@@ -62,7 +85,9 @@ export default function Tasks() {
             <h1>My Tasks</h1>
 
             <form onSubmit={handleSubmit}>
-                <h2>Create new task</h2>
+                <h2>
+                    {editingTask ? 'Edit task' : 'Create new task'}
+                </h2>
                 <input type="text"
                     value={formData.title}
                     placeholder="Title"
@@ -80,8 +105,9 @@ export default function Tasks() {
                 {error && <p style={{ color: 'crimson' }}>{error}</p>}
                 {success && <p style={{ color: "green" }}>{success}</p>}
                 <button type="submit" disabled={loading}>
-                    {loading ? 'Creating...' : 'Create task'}
+                    {loading ? 'Saving...' : (editingTask ? 'Update task' : 'Create task')}
                 </button>
+                {editingTask ? <button type="button" onClick={handleCancel}>Cancel</button> : <></>}
             </form>
 
             <hr />
@@ -93,7 +119,7 @@ export default function Tasks() {
                 ) : (
                     <ul>
                         {tasks.map(task => (
-                            <TaskCard key={task._id} task={task} />
+                            <TaskCard key={task._id} task={task} onEdit={handleEdit} />
                         ))}
                     </ul>
                 )}
