@@ -8,11 +8,7 @@ export const createTask = async (title, description) => {
     return await axios.post(
         `${API_URL}/tasks`,
         { title, description },
-        {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
     )
 }
 
@@ -31,6 +27,15 @@ export const updateTask = async (id, taskData) => {
     return await axios.put(
         `${API_URL}/tasks/${id}`,
         taskData,
+        { headers: { Authorization: `Bearer ${token}` } }
+    )
+}
+
+export const deleteTask = async (id) => {
+    const token = localStorage.getItem('token')
+
+    return await axios.delete(
+        `${API_URL}/tasks/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
     )
 }

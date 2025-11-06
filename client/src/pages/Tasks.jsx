@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { createTask, getTasks, updateTask } from "../services/taskService.js";
+import { createTask, getTasks, updateTask, deleteTask } from "../services/taskService.js";
 import TaskCard from "../components/TaskCard.jsx"
+import Modal from "../components/Modal.jsx";
 
 export default function Tasks() {
     const [formData, setFormData] = useState({ title: '', description: '' })
@@ -9,6 +10,7 @@ export default function Tasks() {
     const [loading, setLoading] = useState(false)
     const [tasks, setTasks] = useState([])
     const [editingTask, setEditingTask] = useState(null)
+    const [taskToDelete, setTaskToDelete] = useState(null)
 
     useEffect(() => {
         fetchTasks()
@@ -37,6 +39,27 @@ export default function Tasks() {
         setFormData({ title: '', description: '' })
         setError('')
         setSuccess('')
+    }
+
+    const handleDeleteClick = (taskId) => {
+        setTaskToDelete(taskId)
+    }
+
+    const handleDeleteConfirm = async () => {
+        try {
+            await deleteTask(taskToDelete)
+            setSuccess('Task deleted!')
+            fetchTasks()
+        } catch (error) {
+            setError('Error deleting task')
+            console.error(error)
+        } finally {
+            setTaskToDelete(null)
+        }
+    }
+
+    const handleDeleteCancel = () => {
+        setTaskToDelete(null)
     }
 
     const handleSubmit = async (e) => {
@@ -119,11 +142,19 @@ export default function Tasks() {
                 ) : (
                     <ul>
                         {tasks.map(task => (
-                            <TaskCard key={task._id} task={task} onEdit={handleEdit} />
+                            <TaskCard key={task._id} task={task} onEdit={handleEdit} onDelete={handleDeleteClick} />
                         ))}
                     </ul>
                 )}
             </div>
+
+            <Modal
+                isOpen={!!taskToDelete}
+                onClose={handleDeleteCancel}
+                onConfirm={handleDeleteConfirm}
+                title="Delete task"
+                message="Are you sure you want to delete this task? This cannot be undone"
+            />
         </div>
     )
 }
