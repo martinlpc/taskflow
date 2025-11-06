@@ -67,3 +67,27 @@ export const updateTask = async (req, res) => {
         return res.status(500).json({ message: 'Error updating task' })
     }
 }
+
+export const deleteTask = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        const task = await Task.findById(id)
+
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found' })
+        }
+
+        if (task.userId.toString() !== req.userId) {
+            return res.status(403).json({ message: 'Not authorized' })
+        }
+
+        await Task.deleteOne(task)
+
+        return res.status(200).json({ message: 'Task deleted' })
+
+    } catch (error) {
+        console.error('Error deleting task:', error);
+        return res.status(500).json({ message: 'Error deleting task' })
+    }
+}

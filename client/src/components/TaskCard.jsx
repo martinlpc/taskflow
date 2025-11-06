@@ -1,4 +1,4 @@
-export default function TaskCard({ task, onEdit }) {
+export default function TaskCard({ task, onEdit, onDelete }) {
     return (
         <li>
             <h3>{task.title}</h3>
@@ -12,6 +12,7 @@ export default function TaskCard({ task, onEdit }) {
                 )}
             </small>
             <button onClick={() => onEdit(task)}>Edit</button>
+            <button onClick={() => onDelete(task._id)}>Delete</button>
             <hr />
         </li>
     )
