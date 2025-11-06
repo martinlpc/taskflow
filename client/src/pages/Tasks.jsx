@@ -62,6 +62,23 @@ export default function Tasks() {
         setTaskToDelete(null)
     }
 
+    const handleStatusChange = async (taskId, newStatus) => {
+        try {
+            const taskToUpdate = tasks.find(t => t._id === taskId)
+            await updateTask(taskId, {
+                title: taskToUpdate.title,
+                description: taskToUpdate.description,
+                status: newStatus,
+                priority: taskToUpdate.priority
+            })
+
+            fetchTasks()
+        } catch (error) {
+            setError('Error updating tasks')
+            console.error(error)
+        }
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError('')
@@ -142,7 +159,13 @@ export default function Tasks() {
                 ) : (
                     <ul>
                         {tasks.map(task => (
-                            <TaskCard key={task._id} task={task} onEdit={handleEdit} onDelete={handleDeleteClick} />
+                            <TaskCard
+                                key={task._id}
+                                task={task}
+                                onEdit={handleEdit}
+                                onDelete={handleDeleteClick}
+                                onStatusChange={handleStatusChange}
+                            />
                         ))}
                     </ul>
                 )}
