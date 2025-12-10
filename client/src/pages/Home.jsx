@@ -7,6 +7,9 @@ export default function Home() {
             {user && <p>Hello, {user.name}!</p>}
             <p>You are logged in!</p>
             <a href="/tasks">Go to Tasks</a>
+            <div className="bg-blue-500 text-white p-4 rounded">
+                Test Tailwind
+            </div>
         </div>
     )
 }
