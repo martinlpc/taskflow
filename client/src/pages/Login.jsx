@@ -57,34 +57,91 @@ export default function Login() {
     }
 
     return (
-        <div>
-            <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
-                <input
-                    id="email"
-                    required
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                />
-                <input
-                    id="password"
-                    required
-                    type="password"
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                />
-                <div>
-                    {error && <p style={{ color: "crimson" }}>{error}</p>}
-                    {success && <p style={{ color: "green" }}>{success}</p>}
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4 sm:px-6 lg:px-8">
+            <div className="w-full max-w-md space-y-8">
+                {/* Header */}
+                <div className="text-center">
+                    <h1 className="text-4xl font-bold text-slate-900 mb-2">Welcome Back</h1>
+                    <p className="text-gray-600">Sign in to your TaskFlow account</p>
                 </div>
-                <button type="submit" disabled={loading}>
-                    {loading ? 'Signing in...' : 'Sign in'}
-                </button>
-                <p>
-                    Don't have an account? <a href="/register">Register here</a>
-                </p>
-            </form>
+
+                {/* Form Container */}
+                <div className="bg-white rounded-lg shadow-lg p-8 space-y-6">
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        {/* Email Input */}
+                        <div>
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                                Email Address
+                            </label>
+                            <input
+                                id="email"
+                                type="email"
+                                required
+                                value={formData.email}
+                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                placeholder="you@example.com"
+                            />
+                        </div>
+
+                        {/* Password Input */}
+                        <div>
+                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                                Password
+                            </label>
+                            <input
+                                id="password"
+                                type="password"
+                                required
+                                value={formData.password}
+                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                placeholder="••••••••"
+                            />
+                        </div>
+
+                        {/* Error/Success Messages */}
+                        {error && (
+                            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                                <p className="text-red-700 text-sm font-medium">{error}</p>
+                            </div>
+                        )}
+                        {success && (
+                            <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                                <p className="text-green-700 text-sm font-medium">{success}</p>
+                            </div>
+                        )}
+
+                        {/* Submit Button */}
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                        >
+                            {loading ? 'Signing in...' : 'Sign In'}
+                        </button>
+                    </form>
+
+                    {/* Divider */}
+                    <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                            <div className="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div className="relative flex justify-center text-sm">
+                            <span className="px-2 bg-white text-gray-500">Don't have an account?</span>
+                        </div>
+                    </div>
+
+                    {/* Sign Up Link */}
+                    <button
+                        type="button"
+                        onClick={() => navigate('/register')}
+                        className="w-full bg-slate-100 hover:bg-slate-200 text-slate-900 font-semibold py-2 px-4 rounded-lg transition-colors"
+                    >
+                        Create New Account
+                    </button>
+                </div>
+            </div>
         </div>
     )
 }

@@ -5,11 +5,13 @@ import Home from "./pages/Home"
 import Tasks from "./pages/Tasks"
 import PrivateRoute from "./pages/PrivateRoute"
 import PublicRoute from "./pages/PublicRoute"
+import Navbar from "./components/Navbar"
 
 function App() {
 
   return (
     <BrowserRouter>
+      <Navbar />
       <Routes>
         {/* Public routes - if not signed in */}
         <Route
