@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { createTask, getTasks, updateTask, deleteTask } from "../services/taskService.js";
 import TaskCard from "../components/TaskCard.jsx"
 import Modal from "../components/Modal.jsx";
 
 export default function Tasks() {
+    const [searchParams, setSearchParams] = useSearchParams()
     const [formData, setFormData] = useState({ title: '', description: '' })
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
@@ -11,11 +13,21 @@ export default function Tasks() {
     const [tasks, setTasks] = useState([])
     const [editingTask, setEditingTask] = useState(null)
     const [taskToDelete, setTaskToDelete] = useState(null)
-    const [filterStatus, setFilterStatus] = useState('all')
+    const [filterStatus, setFilterStatus] = useState(searchParams.get('status') || 'all')
 
     useEffect(() => {
         fetchTasks()
     }, [])
+
+    useEffect(() => {
+        // Actualizar query params cuando cambia el filtro
+        if (filterStatus === 'all') {
+            searchParams.delete('status')
+        } else {
+            searchParams.set('status', filterStatus)
+        }
+        setSearchParams(searchParams)
+    }, [filterStatus, searchParams, setSearchParams])
 
     const fetchTasks = async () => {
         try {
@@ -216,8 +228,8 @@ export default function Tasks() {
                             <button
                                 onClick={() => setFilterStatus('all')}
                                 className={`px-4 py-2 rounded-lg font-semibold transition-colors ${filterStatus === 'all'
-                                        ? 'bg-blue-600 text-white'
-                                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                                    ? 'bg-blue-600 text-white'
+                                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                                     }`}
                             >
                                 All Tasks
@@ -225,8 +237,8 @@ export default function Tasks() {
                             <button
                                 onClick={() => setFilterStatus('todo')}
                                 className={`px-4 py-2 rounded-lg font-semibold transition-colors ${filterStatus === 'todo'
-                                        ? 'bg-red-600 text-white'
-                                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                                    ? 'bg-red-600 text-white'
+                                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                                     }`}
                             >
                                 To Do
@@ -234,8 +246,8 @@ export default function Tasks() {
                             <button
                                 onClick={() => setFilterStatus('in_progress')}
                                 className={`px-4 py-2 rounded-lg font-semibold transition-colors ${filterStatus === 'in_progress'
-                                        ? 'bg-yellow-600 text-white'
-                                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                                    ? 'bg-yellow-600 text-white'
+                                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                                     }`}
                             >
                                 In Progress
@@ -243,8 +255,8 @@ export default function Tasks() {
                             <button
                                 onClick={() => setFilterStatus('done')}
                                 className={`px-4 py-2 rounded-lg font-semibold transition-colors ${filterStatus === 'done'
-                                        ? 'bg-green-600 text-white'
-                                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                                    ? 'bg-green-600 text-white'
+                                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                                     }`}
                             >
                                 Done
