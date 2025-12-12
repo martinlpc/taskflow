@@ -29,8 +29,21 @@ export const createTask = async (req, res) => {
 
 export const getTasks = async (req, res) => {
     try {
-        const tasks = await Task.find({ userId: req.userId })
-            .sort({ createdAt: -1 })
+        const { status, priority, search, tags } = req.query
+
+        const filter = { userId: req.userId }
+
+        if (status) filter.status = status
+        if (priority) filter.priority = priority
+        if (tags) filter.tags = { $in: tags.split(',') }
+        if (search) {
+            filter.$or = [
+                { title: { $regex: search, $options: 'i' } },
+                { description: { $regex: search, $options: 'i' } }
+            ]
+        }
+
+        const tasks = await Task.find(filter).sort({ createdAt: -1 })
 
         return res.status(200).json({ tasks })
     } catch (error) {
