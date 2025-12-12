@@ -12,24 +12,23 @@ TaskFlow is a full-stack web application built with the MERN stack that allows f
 
 ## ✨ Features
 
-### MVP (v1.0)
+### Sprint 1 - COMPLETED ✅
 
--   ✅ Complete authentication (register and login)
--   ✅ Full CRUD for tasks
--   ✅ Task states (To Do, In Progress, Done)
--   ✅ Priorities (Low, Medium, High)
--   ✅ Text-based task search
--   ✅ Filters by status and priority
--   ✅ Customizable tags
--   ✅ Calendar view
--   ✅ Responsive design
+-   Complete authentication with JWT
+-   Full CRUD for tasks
+-   Quick status change with dropdown
+-   Task priorities (Low, Medium, High)
+-   Status filtering
+-   Delete with confirmation modal
+-   Professional UI with Tailwind CSS
+-   Responsive design with navbar
 
-### Coming Soon
+### Coming Soon 🔄
 
--   🔄 Dashboard with visual metrics
--   🔄 Time estimation and tracking
--   🔄 Multiple projects/workspaces
--   🔄 Dark mode
+-   Text search functionality
+-   Priority and tags filters UI
+-   Calendar view
+-   Dashboard with metrics
 
 ## 🛠️ Tech Stack
 
