@@ -2,85 +2,153 @@
 
 > A modern and minimalist Task Manager for freelancers who need to organize their work efficiently.
 
-![Status](https://img.shields.io/badge/status-in%20development-yellow)
-![React](https://img.shields.io/badge/React-18.3-blue)
-![Node](https://img.shields.io/badge/Node-20+-green)
+[![Status](https://img.shields.io/badge/status-MVP%20deployed-success)](https://taskflow-inky-pi.vercel.app/)
+[![React](https://img.shields.io/badge/React-18.3-blue)](https://react.dev/)
+[![Node](https://img.shields.io/badge/Node-20+-green)](https://nodejs.org/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+## 🌐 Live Demo
+
+**Try it now:** [https://taskflow-inky-pi.vercel.app/](https://taskflow-inky-pi.vercel.app/)
+
+**API Endpoint:** [https://taskflow-server-l2z9.onrender.com/](https://taskflow-server-l2z9.onrender.com/)
+
+---
 
 ## 📋 Description
 
 TaskFlow is a full-stack web application built with the MERN stack that allows freelancers to manage their daily tasks, organize projects, and maintain control of their work with a clean and intuitive interface.
 
+This project was developed as part of my professional portfolio, following agile methodologies and best practices in modern web development.
+
+---
+
 ## ✨ Features
 
-### Sprint 1 - COMPLETED ✅
+### 🎯 Sprint 1 - MVP (COMPLETED)
 
--   Complete authentication with JWT
--   Full CRUD for tasks
--   Quick status change with dropdown
--   Task priorities (Low, Medium, High)
--   Status filtering
--   Delete with confirmation modal
--   Professional UI with Tailwind CSS
--   Responsive design with navbar
+**Authentication & Security:**
 
-### Coming Soon 🔄
+-   ✅ User registration with email validation
+-   ✅ Secure login with JWT authentication
+-   ✅ Password encryption with bcrypt
+-   ✅ Protected routes (frontend and backend)
+-   ✅ Token-based session management
 
--   Text search functionality
--   Priority and tags filters UI
--   Calendar view
--   Dashboard with metrics
+**Task Management:**
+
+-   ✅ Create, read, update, and delete tasks
+-   ✅ Task states: To Do, In Progress, Done
+-   ✅ Priority levels: Low, Medium, High
+-   ✅ Quick status change with dropdown
+-   ✅ Delete confirmation modal
+-   ✅ Filter tasks by status
+-   ✅ Timestamps (created/updated dates)
+
+**User Interface:**
+
+-   ✅ Professional UI with Tailwind CSS
+-   ✅ Responsive design (mobile-first)
+-   ✅ Navigation bar with hamburger menu
+-   ✅ Landing page
+-   ✅ Smooth transitions and animations
+-   ✅ Loading states and error handling
+
+### 🔄 Sprint 2 - Coming Soon
+
+-   🔜 Text-based search functionality
+-   🔜 Filter by priority
+-   🔜 Tags management with UI
+-   🔜 Calendar view for tasks
+-   🔜 Dashboard with visual metrics
+
+### 💡 Future Enhancements
+
+-   Time estimation and tracking
+-   Multiple projects/workspaces
+-   Team collaboration features
+-   Dark mode
+-   Export to CSV/PDF
+-   Email notifications
+
+---
 
 ## 🛠️ Tech Stack
 
 ### Frontend
 
--   **React** 18.3+ with Vite
--   **React Router** 6+
+-   **React** 18.3 with Vite
+-   **React Router** 6+ for navigation
 -   **Axios** for HTTP requests
 -   **Tailwind CSS** for styling
+-   **Lucide React** for icons
 
 ### Backend
 
 -   **Node.js** 20+ LTS
 -   **Express** 4.19+
--   **MongoDB** 8+ (MongoDB Atlas)
+-   **MongoDB** 8+ with Atlas
 -   **Mongoose** 8+ ODM
 -   **JWT** for authentication
--   **bcrypt** for encryption
+-   **bcryptjs** for password hashing
+
+### DevOps
+
+-   **Frontend:** Vercel (automatic deployments)
+-   **Backend:** Render (automatic deployments)
+-   **Database:** MongoDB Atlas (cloud)
+-   **Version Control:** Git & GitHub
+
+---
 
 ## 📁 Project Structure
 
 This is a monorepo containing both frontend and backend:
 
--   `/client` - React frontend application
--   `/server` - Node.js/Express backend API
-
-Each folder has its own README with specific setup instructions.
-
 ```
 taskflow/
-├── client/                 # Frontend React + Vite
+├── client/                 # Frontend (React + Vite)
 │   ├── src/
-│   │   ├── components/    # Reusable components
-│   │   ├── pages/         # Main pages
-│   │   ├── services/      # API calls
-│   │   ├── context/       # Context API
-│   │   ├── utils/         # Utilities
+│   │   ├── components/    # Reusable UI components
+│   │   │   ├── Modal.jsx
+│   │   │   ├── PrivateRoute.jsx
+│   │   │   ├── PublicRoute.jsx
+│   │   │   └── TaskCard.jsx
+│   │   ├── pages/         # Application pages
+│   │   │   ├── Home.jsx
+│   │   │   ├── Login.jsx
+│   │   │   ├── Register.jsx
+│   │   │   └── Tasks.jsx
+│   │   ├── services/      # API integration
+│   │   │   ├── authService.js
+│   │   │   └── taskService.js
 │   │   └── App.jsx
 │   └── package.json
 │
-├── server/                # Backend Node + Express
-│   ├── controllers/       # Business logic
-│   ├── models/           # Mongoose models
-│   ├── routes/           # Express routes
-│   ├── middleware/       # Middlewares
-│   ├── config/           # Configuration
+├── server/                # Backend (Node + Express)
+│   ├── config/           # Configuration files
+│   │   └── db.js
+│   ├── controllers/      # Business logic
+│   │   ├── authController.js
+│   │   └── taskController.js
+│   ├── middleware/       # Custom middleware
+│   │   └── authMiddleware.js
+│   ├── models/          # Mongoose schemas
+│   │   ├── Task.js
+│   │   └── User.js
+│   ├── routes/          # API routes
+│   │   ├── authRoutes.js
+│   │   └── taskRoutes.js
 │   └── server.js
 │
-└── README.md
+├── LICENSE
+├── README.md
+└── package.json
 ```
 
-## 🚀 Installation and Usage
+---
+
+## 🚀 Local Development Setup
 
 ### Prerequisites
 
@@ -88,159 +156,181 @@ taskflow/
 -   MongoDB Atlas account (or local MongoDB)
 -   pnpm, npm or yarn
 
-### Clone the repository
+### Installation
+
+1. **Clone the repository:**
 
 ```bash
 git clone https://github.com/martinlpc/taskflow.git
 cd taskflow
 ```
 
-### Backend Setup
-
-1. Navigate to server folder:
+2. **Backend Setup:**
 
 ```bash
 cd server
-```
+npm install
 
-2. Install dependencies:
-
-```bash
-pnpm install
-```
-
-3. Create `.env` file in `/server` root:
-
-```env
+# Create .env file
+cat > .env << EOF
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_super_secure_secret_key
 NODE_ENV=development
-```
+CLIENT_URL=http://localhost:5173
+EOF
 
-4. Start server:
-
-```bash
+# Start server
 npm run dev
 ```
 
-Server will be running at `http://localhost:5000`
+Server will run at `http://localhost:5000`
 
-### Frontend Setup
-
-1. Navigate to client folder:
+3. **Frontend Setup:**
 
 ```bash
 cd client
-```
+npm install
 
-2. Install dependencies:
-
-```bash
-pnpm install
-```
-
-3. Create `.env` file in `/client` root:
-
-```env
+# Create .env file
+cat > .env << EOF
 VITE_API_URL=http://localhost:5000/api
-```
+EOF
 
-4. Start application:
-
-```bash
-pnpm run dev
+# Start application
+npm run dev
 ```
 
 Application will be available at `http://localhost:5173`
 
-## 📡 API Endpoints
+---
 
-### Authentication
+## 📡 API Documentation
 
-```
-POST   /api/auth/register    - Register new user
-POST   /api/auth/login       - Login
-```
+### Authentication Endpoints
 
-### Tasks (authentication required)
+| Method | Endpoint             | Description       | Auth Required |
+| ------ | -------------------- | ----------------- | ------------- |
+| POST   | `/api/auth/register` | Register new user | No            |
+| POST   | `/api/auth/login`    | Login user        | No            |
 
-```
-GET    /api/tasks            - Get all user's tasks
-POST   /api/tasks            - Create new task
-GET    /api/tasks/:id        - Get specific task
-PUT    /api/tasks/:id        - Update task
-DELETE /api/tasks/:id        - Delete task
-```
+### Task Endpoints
+
+| Method | Endpoint                 | Description            | Auth Required |
+| ------ | ------------------------ | ---------------------- | ------------- |
+| GET    | `/api/tasks`             | Get all user's tasks   | Yes           |
+| GET    | `/api/tasks?status=todo` | Filter tasks by status | Yes           |
+| POST   | `/api/tasks`             | Create new task        | Yes           |
+| PUT    | `/api/tasks/:id`         | Update task            | Yes           |
+| DELETE | `/api/tasks/:id`         | Delete task            | Yes           |
 
 ### Query Parameters
 
--   `status`: Filter by status (todo, in_progress, done)
--   `priority`: Filter by priority (low, medium, high)
--   `search`: Search in title and description
--   `tags`: Filter by tags
+-   `status`: Filter by status (`todo`, `in_progress`, `done`)
+-   `priority`: Filter by priority (`low`, `medium`, `high`) - _Coming in Sprint 2_
+-   `search`: Search in title and description - _Coming in Sprint 2_
+
+---
 
 ## 🗄️ Data Models
 
-### User
+### User Model
 
 ```javascript
 {
-  name: String,
-  email: String (unique),
-  password: String (hashed),
+  name: String (required),
+  email: String (required, unique, lowercase),
+  password: String (required, hashed),
   createdAt: Date,
   updatedAt: Date
 }
 ```
 
-### Task
+### Task Model
 
 ```javascript
 {
   title: String (required),
   description: String,
-  status: String (enum: ['todo', 'in_progress', 'done']),
-  priority: String (enum: ['low', 'medium', 'high']),
-  dueDate: Date,
-  tags: [String],
-  userId: ObjectId (ref: User),
+  status: String (enum: ['todo', 'in_progress', 'done'], default: 'todo'),
+  priority: String (enum: ['low', 'medium', 'high'], default: 'medium'),
+  dueDate: Date (optional),
+  tags: [String] (optional),
+  userId: ObjectId (ref: User, required),
   createdAt: Date,
   updatedAt: Date
 }
 ```
 
+---
+
 ## 🧪 Testing
 
-```bash
-# Backend tests
-cd server
-pnpm test
+The application has been manually tested for:
 
-# Frontend tests
-cd client
-pnpm test
-```
+-   ✅ User registration and login flows
+-   ✅ Task CRUD operations
+-   ✅ Status filtering
+-   ✅ Authentication and authorization
+-   ✅ Error handling and validation
+-   ✅ Responsive design on multiple devices
+
+Automated testing suite coming in future updates.
+
+---
+
+## 🎨 Design Decisions
+
+### Why MERN Stack?
+
+-   **MongoDB:** Flexible schema for evolving task requirements
+-   **Express:** Lightweight and unopinionated backend framework
+-   **React:** Component-based architecture for maintainable UI
+-   **Node.js:** JavaScript everywhere for consistent development
+
+### Why Tailwind CSS?
+
+-   Utility-first approach for rapid UI development
+-   Consistent design system out of the box
+-   Easy to customize and extend
+-   Excellent mobile-first responsive design
+
+### Architecture Patterns
+
+-   **RESTful API:** Standard HTTP methods and status codes
+-   **JWT Authentication:** Stateless and scalable auth
+-   **Separation of Concerns:** Clear separation between routes, controllers, and models
+-   **Protected Routes:** Both frontend and backend validation
+
+---
 
 ## 📦 Deployment
 
-### Backend (Render / Railway)
+### Production Environment
 
-1. Create new Web Service
-2. Connect GitHub repository
-3. Configure environment variables
-4. Automatic deploy from main branch
+**Frontend (Vercel):**
 
-### Frontend (Vercel / Netlify)
+-   Automatic deployments from `main` branch
+-   Environment variable: `VITE_API_URL`
+-   Custom domain ready
 
-1. Connect GitHub repository
-2. Set build command: `pnpm run build`
-3. Set output directory: `dist`
-4. Add environment variable: `VITE_API_URL`
+**Backend (Render):**
+
+-   Automatic deployments from `main` branch
+-   Environment variables: `MONGO_URI`, `JWT_SECRET`, `CLIENT_URL`
+-   Free tier with auto-sleep (may have cold starts)
+
+**Database (MongoDB Atlas):**
+
+-   Cloud-hosted MongoDB cluster
+-   Automatic backups
+-   Connection pooling enabled
+
+---
 
 ## 🤝 Contributing
 
-This is a personal portfolio project, but suggestions are welcome.
+While this is primarily a portfolio project, suggestions and feedback are welcome!
 
 1. Fork the project
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
@@ -248,22 +338,63 @@ This is a personal portfolio project, but suggestions are welcome.
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📝 License
+---
 
-This project is under the MIT License. See `LICENSE` file for details.
+## 📝 Development Process
+
+This project was built following:
+
+-   ✅ Agile methodology with 2-week sprints
+-   ✅ User Stories with acceptance criteria
+-   ✅ Git workflow with feature branches
+-   ✅ Semantic commit messages
+-   ✅ Code reviews via Pull Requests
+-   ✅ Continuous deployment pipeline
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
 
 ## 👤 Author
 
-Martín Pacheco
+**Martín Pacheco**
 
 -   GitHub: [@martinlpc](https://github.com/martinlpc)
 -   LinkedIn: [Martin Pacheco](https://linkedin.com/in/martinlpacheco)
 
+---
+
 ## 🙏 Acknowledgments
 
--   Project created as part of my professional portfolio
--   Inspired by best practices in full-stack MERN development
+-   Project developed as part of my professional portfolio
+-   Inspired by modern task management applications
+-   Built with best practices from the MERN development community
+-   Special thanks to the open-source community for amazing tools
 
 ---
 
-⭐️ If you find this project useful, give it a star on GitHub!
+## 🔮 Roadmap
+
+### Q1 2026
+
+-   [ ] Complete Sprint 2 features
+-   [ ] Add automated testing (Jest + React Testing Library)
+-   [ ] Implement dashboard with analytics
+-   [ ] Add dark mode
+
+### Q2 2026
+
+-   [ ] Team collaboration features
+-   [ ] Time tracking functionality
+-   [ ] Mobile app (React Native)
+-   [ ] Integration with third-party tools
+
+---
+
+⭐️ If you find this project useful or interesting, please consider giving it a star on GitHub!
+
+**Live Demo:** [https://taskflow-inky-pi.vercel.app/](https://taskflow-inky-pi.vercel.app/)
