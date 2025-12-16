@@ -12,11 +12,19 @@ export const createTask = async (title, description) => {
     )
 }
 
-export const getTasks = async () => {
+export const getTasks = async (filters = {}) => {
     const token = localStorage.getItem('token')
+    const params = new URLSearchParams()
 
-    return await axios.get(
-        `${API_URL}/tasks`, {
+    if (filters.status) params.append('status', filters.status)
+    if (filters.priority) params.append('priority', filters.priority)
+    if (filters.search) params.append('search', filters.search)
+    if (filters.tags) params.append('tags', filters.tags)
+
+    const queryString = params.toString()
+    const url = queryString ? `${API_URL}/tasks?${queryString}` : `${API_URL}/tasks`
+
+    return await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` }
     })
 }

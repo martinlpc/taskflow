@@ -14,6 +14,7 @@ export default function Tasks() {
     const [editingTask, setEditingTask] = useState(null)
     const [taskToDelete, setTaskToDelete] = useState(null)
     const [filterStatus, setFilterStatus] = useState(searchParams.get('status') || 'all')
+    const [searchTerm, setSearchTerm] = useState('')
 
     useEffect(() => {
         fetchTasks()
@@ -29,9 +30,23 @@ export default function Tasks() {
         setSearchParams(searchParams)
     }, [filterStatus, searchParams, setSearchParams])
 
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            if (searchTerm.length === 0 || searchTerm.length >= 3) {
+                fetchTasks()
+            }
+        }, 400)
+
+        return () => clearTimeout(timeoutId)
+    }, [searchTerm, filterStatus])
+
     const fetchTasks = async () => {
         try {
-            const response = await getTasks()
+            const filters = {}
+            if (filterStatus !== 'all') filters.status = filterStatus
+            if (searchTerm.trim()) filters.search = searchTerm.trim()
+
+            const response = await getTasks(filters)
             setTasks(response.data.tasks)
         } catch (error) {
             console.error('Error fetching tasks:', error);
@@ -223,6 +238,22 @@ export default function Tasks() {
 
                     {/* Tasks List Section */}
                     <div className="lg:col-span-2">
+                        {/* Search Input */}
+                        <div className="mb-4">
+                            <input
+                                type="text"
+                                placeholder="Search tasks..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                            />
+                            {searchTerm.length > 0 && searchTerm.length < 3 && (
+                                <small className="text-gray-500 text-sm mt-1 block">
+                                    Type at least 3 characters to search
+                                </small>
+                            )}
+                        </div>
+
                         {/* Filter Tabs */}
                         <div className="flex flex-wrap gap-2 mb-6">
                             <button
