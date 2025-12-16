@@ -39,7 +39,6 @@ This project was developed as part of my professional portfolio, following agile
 
 -   ✅ Create, read, update, and delete tasks
 -   ✅ Task states: To Do, In Progress, Done
--   ✅ Priority levels: Low, Medium, High
 -   ✅ Quick status change with dropdown
 -   ✅ Delete confirmation modal
 -   ✅ Filter tasks by status
@@ -57,6 +56,7 @@ This project was developed as part of my professional portfolio, following agile
 ### 🔄 Sprint 2 - Coming Soon
 
 -   🔜 Text-based search functionality
+-   🔜 Priority assignment and filters
 -   🔜 Filter by priority
 -   🔜 Tags management with UI
 -   🔜 Calendar view for tasks
@@ -81,7 +81,6 @@ This project was developed as part of my professional portfolio, following agile
 -   **React Router** 6+ for navigation
 -   **Axios** for HTTP requests
 -   **Tailwind CSS** for styling
--   **Lucide React** for icons
 
 ### Backend
 
