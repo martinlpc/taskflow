@@ -2,14 +2,14 @@
 
 > A modern and minimalist Task Manager for freelancers who need to organize their work efficiently.
 
-[![Status](https://img.shields.io/badge/status-MVP%20deployed-success)](https://taskflow-inky-pi.vercel.app/)
+[![Status](https://img.shields.io/badge/status-MVP%20deployed-success)](https://taskflow-mp.vercel.app/)
 [![React](https://img.shields.io/badge/React-18.3-blue)](https://react.dev/)
 [![Node](https://img.shields.io/badge/Node-20+-green)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ## 🌐 Live Demo
 
-**Try it now:** [https://taskflow-inky-pi.vercel.app/](https://taskflow-inky-pi.vercel.app/)
+**Try it now:** [https://taskflow-mp.vercel.app/](https://taskflow-mp.vercel.app/)
 
 **API Endpoint:** [https://taskflow-server-l2z9.onrender.com/](https://taskflow-server-l2z9.onrender.com/)
 
@@ -396,4 +396,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ⭐️ If you find this project useful or interesting, please consider giving it a star on GitHub!
 
-**Live Demo:** [https://taskflow-inky-pi.vercel.app/](https://taskflow-inky-pi.vercel.app/)
+**Live Demo:** [https://taskflow-mp.vercel.app/](https://taskflow-mp.vercel.app/)
