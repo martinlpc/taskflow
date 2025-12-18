@@ -14,6 +14,7 @@ export default function Tasks() {
     const [editingTask, setEditingTask] = useState(null)
     const [taskToDelete, setTaskToDelete] = useState(null)
     const [filterStatus, setFilterStatus] = useState(searchParams.get('status') || 'all')
+    const [filterPriority, setFilterPriority] = useState(searchParams.get('priority') || 'all')
     const [searchTerm, setSearchTerm] = useState('')
 
     useEffect(() => {
@@ -21,14 +22,19 @@ export default function Tasks() {
     }, [])
 
     useEffect(() => {
-        // Actualizar query params cuando cambia el filtro
-        if (filterStatus === 'all') {
-            searchParams.delete('status')
-        } else {
-            searchParams.set('status', filterStatus)
+        // Actualizar query params cuando cambien los filtros
+        const newParams = new URLSearchParams()
+
+        if (filterStatus !== 'all') {
+            newParams.set('status', filterStatus)
         }
-        setSearchParams(searchParams)
-    }, [filterStatus, searchParams, setSearchParams])
+
+        if (filterPriority !== 'all') {
+            newParams.set('priority', filterPriority)
+        }
+
+        setSearchParams(newParams)
+    }, [filterStatus, filterPriority, searchParams, setSearchParams])
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -38,12 +44,13 @@ export default function Tasks() {
         }, 400)
 
         return () => clearTimeout(timeoutId)
-    }, [searchTerm, filterStatus])
+    }, [searchTerm, filterStatus, filterPriority])
 
     const fetchTasks = async () => {
         try {
             const filters = {}
             if (filterStatus !== 'all') filters.status = filterStatus
+            if (filterPriority !== 'all') filters.priority = filterPriority
             if (searchTerm.trim()) filters.search = searchTerm.trim()
 
             const response = await getTasks(filters)
@@ -109,6 +116,21 @@ export default function Tasks() {
         } catch (error) {
             setError('Error updating tasks')
             console.error(error)
+        }
+    }
+
+    const handlePriorityChange = async (taskId, newPriority) => {
+        try {
+            const taskToUpdate = tasks.find(t => t._id === taskId)
+            await updateTask(taskId, {
+                title: taskToUpdate.title,
+                description: taskToUpdate.description,
+                status: taskToUpdate.status,
+                priority: newPriority
+            })
+            fetchTasks()
+        } catch {
+            setError('Error updating priority')
         }
     }
 
@@ -254,44 +276,97 @@ export default function Tasks() {
                             )}
                         </div>
 
-                        {/* Filter Tabs */}
-                        <div className="flex flex-wrap gap-2 mb-6">
-                            <button
-                                onClick={() => setFilterStatus('all')}
-                                className={`px-4 py-2 rounded-lg font-semibold transition-colors ${filterStatus === 'all'
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                                    }`}
-                            >
-                                All Tasks
-                            </button>
-                            <button
-                                onClick={() => setFilterStatus('todo')}
-                                className={`px-4 py-2 rounded-lg font-semibold transition-colors ${filterStatus === 'todo'
-                                    ? 'bg-red-600 text-white'
-                                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                                    }`}
-                            >
-                                To Do
-                            </button>
-                            <button
-                                onClick={() => setFilterStatus('in_progress')}
-                                className={`px-4 py-2 rounded-lg font-semibold transition-colors ${filterStatus === 'in_progress'
-                                    ? 'bg-yellow-600 text-white'
-                                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                                    }`}
-                            >
-                                In Progress
-                            </button>
-                            <button
-                                onClick={() => setFilterStatus('done')}
-                                className={`px-4 py-2 rounded-lg font-semibold transition-colors ${filterStatus === 'done'
-                                    ? 'bg-green-600 text-white'
-                                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                                    }`}
-                            >
-                                Done
-                            </button>
+                        {/* Filter Section */}
+                        <div className="space-y-3 mb-6">
+                            {/* Status Filters */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Filter by Status
+                                </label>
+                                <div className="flex flex-wrap gap-2">
+                                    <button
+                                        onClick={() => setFilterStatus('all')}
+                                        className={`px-4 py-2 rounded-lg font-semibold transition-colors ${filterStatus === 'all'
+                                            ? 'bg-blue-600 text-white'
+                                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                                            }`}
+                                    >
+                                        All Tasks
+                                    </button>
+                                    <button
+                                        onClick={() => setFilterStatus('todo')}
+                                        className={`px-4 py-2 rounded-lg font-semibold transition-colors ${filterStatus === 'todo'
+                                            ? 'bg-red-600 text-white'
+                                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                                            }`}
+                                    >
+                                        To Do
+                                    </button>
+                                    <button
+                                        onClick={() => setFilterStatus('in_progress')}
+                                        className={`px-4 py-2 rounded-lg font-semibold transition-colors ${filterStatus === 'in_progress'
+                                            ? 'bg-yellow-600 text-white'
+                                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                                            }`}
+                                    >
+                                        In Progress
+                                    </button>
+                                    <button
+                                        onClick={() => setFilterStatus('done')}
+                                        className={`px-4 py-2 rounded-lg font-semibold transition-colors ${filterStatus === 'done'
+                                            ? 'bg-green-600 text-white'
+                                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                                            }`}
+                                    >
+                                        Done
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Priority Filters */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Filter by Priority
+                                </label>
+                                <div className="flex flex-wrap gap-2">
+                                    <button
+                                        onClick={() => setFilterPriority('all')}
+                                        className={`px-4 py-2 rounded-lg font-semibold transition-colors ${filterPriority === 'all'
+                                            ? 'bg-gray-600 text-white'
+                                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                                            }`}
+                                    >
+                                        All Priorities
+                                    </button>
+                                    <button
+                                        onClick={() => setFilterPriority('low')}
+                                        className={`px-4 py-2 rounded-lg font-semibold transition-colors ${filterPriority === 'low'
+                                            ? 'bg-green-600 text-white'
+                                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                                            }`}
+                                    >
+                                        Low
+                                    </button>
+                                    <button
+                                        onClick={() => setFilterPriority('medium')}
+                                        className={`px-4 py-2 rounded-lg font-semibold transition-colors ${filterPriority === 'medium'
+                                            ? 'bg-yellow-600 text-white'
+                                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                                            }`}
+                                    >
+                                        Medium
+                                    </button>
+                                    <button
+                                        onClick={() => setFilterPriority('high')}
+                                        className={`px-4 py-2 rounded-lg font-semibold transition-colors ${filterPriority === 'high'
+                                            ? 'bg-red-600 text-white'
+                                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                                            }`}
+                                    >
+                                        High
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Tasks List */}
@@ -312,6 +387,7 @@ export default function Tasks() {
                                         onEdit={handleEdit}
                                         onDelete={handleDeleteClick}
                                         onStatusChange={handleStatusChange}
+                                        onPriorityChange={handlePriorityChange}
                                     />
                                 ))}
                             </ul>

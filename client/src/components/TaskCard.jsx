@@ -1,38 +1,35 @@
-export default function TaskCard({ task, onEdit, onDelete, onStatusChange }) {
+export default function TaskCard({ task, onEdit, onDelete, onStatusChange, onPriorityChange }) {
     const getStatusColor = (status) => {
-        switch (status) {
-            case 'todo':
-                return 'bg-red-100 text-red-800 border-red-200'
-            case 'in_progress':
-                return 'bg-yellow-100 text-yellow-800 border-yellow-200'
-            case 'done':
-                return 'bg-green-100 text-green-800 border-green-200'
-            default:
-                return 'bg-gray-100 text-gray-800 border-gray-200'
+        const colors = {
+            todo: 'bg-red-100 text-red-800 border-red-200',
+            in_progress: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+            done: 'bg-green-100 text-green-800 border-green-200'
         }
+
+        return colors[status] || colors.todo
+
     }
 
     const getPriorityColor = (priority) => {
-        switch (priority) {
-            case 'low':
-                return 'bg-blue-100 text-blue-800 border-blue-200'
-            case 'medium':
-                return 'bg-orange-100 text-orange-800 border-orange-200'
-            case 'high':
-                return 'bg-red-100 text-red-800 border-red-200'
-            default:
-                return 'bg-gray-100 text-gray-800 border-gray-200'
+        const colors = {
+            low: 'bg-blue-100 text-blue-800 border-blue-200',
+            medium: 'bg-orange-100 text-orange-800 border-orange-200',
+            high: 'bg-red-100 text-red-800 border-red-200'
         }
+
+        return colors[priority] || colors.medium
     }
 
     return (
         <li className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 border border-gray-200 hover:border-blue-300">
             {/* Header */}
-            <div className="flex items-start justify-between mb-4">
+            <div className="flex items-start justify-between mb-6">
                 <div className="flex-1">
-                    <h3 className="text-xl font-bold text-slate-900 mb-2">{task.title}</h3>
+                    <h3 className="text-xl font-bold text-slate-900 mb-3">{task.title}</h3>
                     {task.description && (
-                        <p className="text-gray-600 text-sm">{task.description}</p>
+                        <p className="text-gray-700 text-base leading-relaxed mb-4 bg-gray-50 p-3 rounded-lg border-l-4 border-blue-400">
+                            {task.description}
+                        </p>
                     )}
                 </div>
             </div>
@@ -52,22 +49,41 @@ export default function TaskCard({ task, onEdit, onDelete, onStatusChange }) {
                 )}
             </div>
 
-            {/* Status Change Select */}
-            <div className="mb-4">
-                <label htmlFor={`status-${task._id}`} className="block text-sm font-medium text-gray-700 mb-1">
-                    Update Status
-                </label>
-                <select
-                    id={`status-${task._id}`}
-                    name="status"
-                    value={task.status}
-                    onChange={(e) => onStatusChange(task._id, e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                >
-                    <option value="todo">To Do</option>
-                    <option value="in_progress">In progress</option>
-                    <option value="done">Done</option>
-                </select>
+            {/* Dropdowns más discretos */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                {/* Status Dropdown */}
+                <div>
+                    <label htmlFor={`status-${task._id}`} className="block text-xs font-medium text-gray-600 mb-1">
+                        Status
+                    </label>
+                    <select
+                        id={`status-${task._id}`}
+                        value={task.status}
+                        onChange={(e) => onStatusChange(task._id, e.target.value)}
+                        className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all bg-white"
+                    >
+                        <option value="todo">To Do</option>
+                        <option value="in_progress">In progress</option>
+                        <option value="done">Done</option>
+                    </select>
+                </div>
+
+                {/* Priority Dropdown */}
+                <div>
+                    <label htmlFor={`priority-${task._id}`} className="block text-xs font-medium text-gray-600 mb-1">
+                        Priority
+                    </label>
+                    <select
+                        id={`priority-${task._id}`}
+                        value={task.priority}
+                        onChange={(e) => onPriorityChange(task._id, e.target.value)}
+                        className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all bg-white"
+                    >
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
             </div>
 
             {/* Metadata */}
