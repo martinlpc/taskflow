@@ -47,6 +47,20 @@ export default function TaskCard({ task, onEdit, onDelete, onStatusChange, onPri
                         {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
                     </span>
                 )}
+
+                {/* Tags */}
+                {task.tags && task.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                        {task.tags.map((tag, index) => (
+                            <span
+                                key={index}
+                                className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200"
+                            >
+                                #{tag}
+                            </span>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* Dropdowns más discretos */}
