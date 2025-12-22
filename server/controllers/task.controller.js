@@ -2,7 +2,7 @@ import Task from '../models/task.model.js'
 
 export const createTask = async (req, res) => {
     try {
-        const { title, description } = req.body
+        const { title, description, tags } = req.body
         const userId = req.userId
 
         if (!title?.trim()) {
@@ -12,6 +12,7 @@ export const createTask = async (req, res) => {
         const task = await Task.create({
             title: title.trim(),
             description: description?.trim() || '',
+            tags: tags || [],
             userId
         })
 
@@ -55,7 +56,7 @@ export const getTasks = async (req, res) => {
 export const updateTask = async (req, res) => {
     try {
         const { id } = req.params
-        const { title, description, status, priority } = req.body
+        const { title, description, status, priority, tags } = req.body
 
         const task = await Task.findById(id)
 
@@ -71,6 +72,7 @@ export const updateTask = async (req, res) => {
         if (description !== undefined) task.description = description
         if (status) task.status = status
         if (priority) task.priority = priority
+        if (tags !== undefined) task.tags = tags
 
         await task.save()
 
