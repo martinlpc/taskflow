@@ -20,7 +20,16 @@ const taskSchema = new Schema({
         default: 'medium'
     },
     dueDate: {
-        type: Date
+        type: Date,
+        default: null
+    },
+    startDate: {
+        type: Date,
+        default: null
+    },
+    endDate: {
+        type: Date,
+        default: null
     },
     tags: {
         type: [String],
