@@ -2,7 +2,7 @@
 
 > A modern and minimalist Task Manager for freelancers who need to organize their work efficiently.
 
-[![Status](https://img.shields.io/badge/status-MVP%20deployed-success)](https://taskflow-mp.vercel.app/)
+[![Status](https://img.shields.io/badge/status-MVP%20Complete-success)](https://taskflow-mp.vercel.app/)
 [![React](https://img.shields.io/badge/React-18.3-blue)](https://react.dev/)
 [![Node](https://img.shields.io/badge/Node-20+-green)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -19,13 +19,13 @@
 
 TaskFlow is a full-stack web application built with the MERN stack that allows freelancers to manage their daily tasks, organize projects, and maintain control of their work with a clean and intuitive interface.
 
-This project was developed as part of my professional portfolio, following agile methodologies and best practices in modern web development.
+This project was developed as part of my professional portfolio, following agile methodologies with 2-week sprints, user stories with acceptance criteria, and Git workflow with feature branches.
 
 ---
 
 ## ✨ Features
 
-### 🎯 Sprint 1 - MVP (COMPLETED)
+### 🎯 Sprint 1 - Core Functionality (COMPLETED)
 
 **Authentication & Security:**
 
@@ -41,7 +41,6 @@ This project was developed as part of my professional portfolio, following agile
 -   ✅ Task states: To Do, In Progress, Done
 -   ✅ Quick status change with dropdown
 -   ✅ Delete confirmation modal
--   ✅ Filter tasks by status
 -   ✅ Timestamps (created/updated dates)
 
 **User Interface:**
@@ -53,14 +52,46 @@ This project was developed as part of my professional portfolio, following agile
 -   ✅ Smooth transitions and animations
 -   ✅ Loading states and error handling
 
-### 🔄 Sprint 2 - Coming Soon
+---
 
--   🔜 Text-based search functionality
--   🔜 Priority assignment and filters
--   🔜 Filter by priority
--   🔜 Tags management with UI
--   🔜 Calendar view for tasks
--   🔜 Dashboard with visual metrics
+### 🚀 Sprint 2 - Advanced Features (COMPLETED)
+
+**Search & Filtering:**
+
+-   ✅ Text-based search with debounce (min. 3 characters)
+-   ✅ Filter by status (To Do, In Progress, Done)
+-   ✅ Filter by priority (Low, Medium, High)
+-   ✅ Filter by tags with clickeable chips
+-   ✅ Combined filters (search + status + priority + tags)
+-   ✅ URL query parameters for all filters
+
+**Priority Management:**
+
+-   ✅ Priority levels: Low, Medium, High
+-   ✅ Visual priority badges with color coding
+-   ✅ Priority dropdown in task cards
+-   ✅ Filter buttons for each priority level
+
+**Tags System:**
+
+-   ✅ Add/remove tags to tasks
+-   ✅ Tag input with Enter key support
+-   ✅ Visual tag chips with # prefix
+-   ✅ Click tags to filter tasks
+-   ✅ Dynamic tag list based on existing tasks
+-   ✅ Duplicate prevention
+
+**Calendar Dashboard:**
+
+-   ✅ Visual calendar in Home page
+-   ✅ Month, week, and day views
+-   ✅ Task scheduling with start/end dates
+-   ✅ Color-coded events by priority
+-   ✅ Duration blocks for tasks
+-   ✅ Click task to view details
+-   ✅ Opacity for completed tasks
+
+---
 
 ### 💡 Future Enhancements
 
@@ -70,6 +101,8 @@ This project was developed as part of my professional portfolio, following agile
 -   Dark mode
 -   Export to CSV/PDF
 -   Email notifications
+-   Recurring tasks
+-   Subtasks
 
 ---
 
@@ -81,6 +114,8 @@ This project was developed as part of my professional portfolio, following agile
 -   **React Router** 6+ for navigation
 -   **Axios** for HTTP requests
 -   **Tailwind CSS** for styling
+-   **React Big Calendar** for calendar view
+-   **Moment.js** for date handling
 
 ### Backend
 
@@ -109,6 +144,7 @@ taskflow/
 ├── client/                 # Frontend (React + Vite)
 │   ├── src/
 │   │   ├── components/    # Reusable UI components
+│   │   │   ├── Calendar.jsx
 │   │   │   ├── Modal.jsx
 │   │   │   ├── PrivateRoute.jsx
 │   │   │   ├── PublicRoute.jsx
@@ -171,13 +207,11 @@ cd server
 npm install
 
 # Create .env file
-cat > .env << EOF
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_super_secure_secret_key
 NODE_ENV=development
 CLIENT_URL=http://localhost:5173
-EOF
 
 # Start server
 npm run dev
@@ -192,9 +226,7 @@ cd client
 npm install
 
 # Create .env file
-cat > .env << EOF
 VITE_API_URL=http://localhost:5000/api
-EOF
 
 # Start application
 npm run dev
@@ -215,19 +247,25 @@ Application will be available at `http://localhost:5173`
 
 ### Task Endpoints
 
-| Method | Endpoint                 | Description            | Auth Required |
-| ------ | ------------------------ | ---------------------- | ------------- |
-| GET    | `/api/tasks`             | Get all user's tasks   | Yes           |
-| GET    | `/api/tasks?status=todo` | Filter tasks by status | Yes           |
-| POST   | `/api/tasks`             | Create new task        | Yes           |
-| PUT    | `/api/tasks/:id`         | Update task            | Yes           |
-| DELETE | `/api/tasks/:id`         | Delete task            | Yes           |
+| Method | Endpoint                   | Description                 | Auth Required |
+| ------ | -------------------------- | --------------------------- | ------------- |
+| GET    | `/api/tasks`               | Get all user's tasks        | Yes           |
+| GET    | `/api/tasks?status=todo`   | Filter tasks by status      | Yes           |
+| GET    | `/api/tasks?priority=high` | Filter tasks by priority    | Yes           |
+| GET    | `/api/tasks?tags=bug`      | Filter tasks by tag         | Yes           |
+| GET    | `/api/tasks?search=fix`    | Search in title/description | Yes           |
+| POST   | `/api/tasks`               | Create new task             | Yes           |
+| PUT    | `/api/tasks/:id`           | Update task                 | Yes           |
+| DELETE | `/api/tasks/:id`           | Delete task                 | Yes           |
 
 ### Query Parameters
 
 -   `status`: Filter by status (`todo`, `in_progress`, `done`)
--   `priority`: Filter by priority (`low`, `medium`, `high`) - _Coming in Sprint 2_
--   `search`: Search in title and description - _Coming in Sprint 2_
+-   `priority`: Filter by priority (`low`, `medium`, `high`)
+-   `tags`: Filter by tag (single tag)
+-   `search`: Search in title and description (min. 3 characters)
+
+Multiple filters can be combined: `/api/tasks?status=todo&priority=high&search=bug`
 
 ---
 
@@ -253,8 +291,10 @@ Application will be available at `http://localhost:5173`
   description: String,
   status: String (enum: ['todo', 'in_progress', 'done'], default: 'todo'),
   priority: String (enum: ['low', 'medium', 'high'], default: 'medium'),
+  tags: [String],
   dueDate: Date (optional),
-  tags: [String] (optional),
+  startDate: Date (optional),
+  endDate: Date (optional),
   userId: ObjectId (ref: User, required),
   createdAt: Date,
   updatedAt: Date
@@ -269,10 +309,12 @@ The application has been manually tested for:
 
 -   ✅ User registration and login flows
 -   ✅ Task CRUD operations
--   ✅ Status filtering
+-   ✅ All filter combinations (status, priority, tags, search)
+-   ✅ Calendar view with scheduled tasks
 -   ✅ Authentication and authorization
 -   ✅ Error handling and validation
 -   ✅ Responsive design on multiple devices
+-   ✅ URL parameter persistence
 
 Automated testing suite coming in future updates.
 
@@ -294,12 +336,21 @@ Automated testing suite coming in future updates.
 -   Easy to customize and extend
 -   Excellent mobile-first responsive design
 
+### Why React Big Calendar?
+
+-   Professional calendar UI with multiple views
+-   Visual task duration blocks
+-   Month, week, and day views
+-   Customizable event styling
+
 ### Architecture Patterns
 
 -   **RESTful API:** Standard HTTP methods and status codes
 -   **JWT Authentication:** Stateless and scalable auth
 -   **Separation of Concerns:** Clear separation between routes, controllers, and models
 -   **Protected Routes:** Both frontend and backend validation
+-   **Component Composition:** Reusable React components
+-   **Query Parameters:** Shareable and bookmarkable filters
 
 ---
 
@@ -312,18 +363,21 @@ Automated testing suite coming in future updates.
 -   Automatic deployments from `main` branch
 -   Environment variable: `VITE_API_URL`
 -   Custom domain ready
+-   Instant rollbacks
 
 **Backend (Render):**
 
 -   Automatic deployments from `main` branch
 -   Environment variables: `MONGO_URI`, `JWT_SECRET`, `CLIENT_URL`
 -   Free tier with auto-sleep (may have cold starts)
+-   Health checks enabled
 
 **Database (MongoDB Atlas):**
 
 -   Cloud-hosted MongoDB cluster
 -   Automatic backups
 -   Connection pooling enabled
+-   M0 Free tier
 
 ---
 
@@ -378,19 +432,35 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔮 Roadmap
 
-### Q1 2026
+### Completed (Sprint 1 & 2)
 
--   [ ] Complete Sprint 2 features
--   [ ] Add automated testing (Jest + React Testing Library)
--   [ ] Implement dashboard with analytics
--   [ ] Add dark mode
+-   [x] Complete authentication system
+-   [x] Full CRUD operations
+-   [x] Advanced filtering and search
+-   [x] Priority management
+-   [x] Tags system
+-   [x] Calendar dashboard
 
-### Q2 2026
+### Future Updates
 
--   [ ] Team collaboration features
+-   [ ] Automated testing (Jest + React Testing Library)
 -   [ ] Time tracking functionality
+-   [ ] Dark mode
+-   [ ] Team collaboration features
 -   [ ] Mobile app (React Native)
 -   [ ] Integration with third-party tools
+
+---
+
+## 📊 Project Stats
+
+-   **Total Development Time:** ~40 hours
+-   **Lines of Code:** ~3,500+
+-   **Commits:** 35+
+-   **Pull Requests:** 13
+-   **Sprints Completed:** 2
+-   **User Stories Completed:** 13
+-   **Current Version:** 2.0.0 (Sprint 2 Complete)
 
 ---
 
