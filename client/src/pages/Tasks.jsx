@@ -89,6 +89,12 @@ export default function Tasks() {
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
+    const handleFormChange = (field, value) => {
+        setFormData({ ...formData, [field]: value })
+        if (error) setError('')
+        if (success) setSuccess('')
+    }
+
     const handleCancel = () => {
         setEditingTask(null)
         setFormData({ title: '', description: '', tags: [] })
@@ -155,6 +161,9 @@ export default function Tasks() {
 
         if (newTag && !formData.tags.includes(newTag)) {
             setFormData({ ...formData, tags: [...formData.tags, newTag] })
+            setTagInput('')
+            if (error) setError('')
+            if (success) setSuccess('')
         }
     }
 
@@ -163,6 +172,9 @@ export default function Tasks() {
             ...formData,
             tags: formData.tags.filter(tag => tag !== tagToRemove)
         })
+
+        if (error) setError('')
+        if (success) setSuccess('')
     }
 
     const handleTagKeyDown = (e) => {
@@ -248,7 +260,7 @@ export default function Tasks() {
                                         id="title"
                                         value={formData.title}
                                         placeholder="Enter task title..."
-                                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                        onChange={(e) => handleFormChange('title', e.target.value)}
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                                     />
                                 </div>
@@ -262,7 +274,7 @@ export default function Tasks() {
                                         placeholder="Add task details..."
                                         value={formData.description}
                                         id="description"
-                                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                        onChange={(e) => handleFormChange('description', e.target.value)}
                                         rows="4"
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none"
                                     />
