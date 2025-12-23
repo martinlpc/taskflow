@@ -63,7 +63,7 @@ export default function TaskCard({ task, onEdit, onDelete, onStatusChange, onPri
                 )}
             </div>
 
-            {/* Dropdowns más discretos */}
+            {/* Dropdowns */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                 {/* Status Dropdown */}
                 <div>
@@ -105,6 +105,27 @@ export default function TaskCard({ task, onEdit, onDelete, onStatusChange, onPri
                 <p>Created: {new Date(task.createdAt).toLocaleDateString()}</p>
                 {task.updatedAt !== task.createdAt && (
                     <p>Edited: {new Date(task.updatedAt).toLocaleString()}</p>
+                )}
+
+                {/* Dates section */}
+                {(task.dueDate || task.startDate || task.endDate) && (
+                    <div className="pt-2 mt-2 border-t border-gray-200 space-y-1">
+                        {task.startDate && (
+                            <p className="text-blue-600 font-medium">
+                                📅 Start: {new Date(task.startDate).toLocaleString()}
+                            </p>
+                        )}
+                        {task.endDate && (
+                            <p className="text-green-600 font-medium">
+                                📅 End: {new Date(task.endDate).toLocaleString()}
+                            </p>
+                        )}
+                        {task.dueDate && (
+                            <p className="text-red-600 font-medium">
+                                📅 Due: {new Date(task.dueDate).toLocaleString()}
+                            </p>
+                        )}
+                    </div>
                 )}
             </div>
 
