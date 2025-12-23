@@ -9,7 +9,10 @@ export default function Tasks() {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
-        tags: []
+        tags: [],
+        dueDate: '',
+        startDate: '',
+        endDate: ''
     })
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
@@ -86,7 +89,10 @@ export default function Tasks() {
         setFormData({
             title: task.title,
             description: task.description || '',
-            tags: task.tags || []
+            tags: task.tags || [],
+            dueDate: task.dueDate ? task.dueDate.slice(0, 16) : '',
+            startDate: task.startDate ? task.startDate.slice(0, 16) : '',
+            endDate: task.endDate ? task.endDate.slice(0, 16) : ''
         })
         setError('')
         setSuccess('')
@@ -101,7 +107,7 @@ export default function Tasks() {
 
     const handleCancel = () => {
         setEditingTask(null)
-        setFormData({ title: '', description: '', tags: [] })
+        setFormData({ title: '', description: '', tags: [], dueDate: '', startDate: '', endDate: '' })
         setError('')
         setSuccess('')
     }
@@ -197,6 +203,12 @@ export default function Tasks() {
         const description = formData.description.trim()
         const tags = formData.tags
 
+        // Convert dates to ISO if existing
+        const dueDate = formData.dueDate ? new Date(formData.dueDate).toISOString() : null
+        const startDate = formData.startDate ? new Date(formData.startDate).toISOString() : null
+        const endDate = formData.endDate ? new Date(formData.endDate).toISOString() : null
+
+
         if (!title) {
             setError('Title is required')
             return
@@ -210,16 +222,19 @@ export default function Tasks() {
                     description,
                     status: editingTask.status,
                     priority: editingTask.priority,
-                    tags
+                    tags,
+                    dueDate: dueDate || null,
+                    startDate: startDate || null,
+                    endDate: endDate || null
                 })
                 setSuccess('Task updated!')
             }
             else {
-                await createTask(title, description, tags)
+                await createTask(title, description, tags, dueDate || null, startDate || null, endDate || null)
                 setSuccess('Task created!')
             }
 
-            setFormData({ title: '', description: '', tags: [] })
+            setFormData({ title: '', description: '', tags: [], dueDate: '', startDate: '', endDate: '' })
             setEditingTask(null)
             fetchTasks()
 
@@ -331,6 +346,57 @@ export default function Tasks() {
                                     </div>
                                     <small className="text-gray-500 text-xs mt-1 block">
                                         Press Enter or click Add to create a tag
+                                    </small>
+                                </div>
+
+                                {/* Date inputs */}
+                                <div className="space-y-3 pt-4 border-t border-gray-200">
+                                    <h3 className="text-sm font-semibold text-gray-700">Schedule (optional)</h3>
+
+                                    {/*Start Date */}
+                                    <div>
+                                        <label htmlFor="startDate" className="block text-xs font-medium text-gray-600 mb-1">
+                                            Start Date
+                                        </label>
+                                        <input
+                                            type="datetime-local"
+                                            id="startDate"
+                                            value={formData.startDate}
+                                            onChange={(e) => handleFormChange('startDate', e.target.value)}
+                                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                        />
+                                    </div>
+
+                                    {/* End Date */}
+                                    <div>
+                                        <label htmlFor="endDate" className="block text-xs font-medium text-gray-600 mb-1">
+                                            End Date
+                                        </label>
+                                        <input
+                                            type="datetime-local"
+                                            id="endDate"
+                                            value={formData.endDate}
+                                            onChange={(e) => handleFormChange('endDate', e.target.value)}
+                                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                        />
+                                    </div>
+
+                                    {/* Due Date */}
+                                    <div>
+                                        <label htmlFor="dueDate" className="block text-xs font-medium text-gray-600 mb-1">
+                                            Due Date (deadline)
+                                        </label>
+                                        <input
+                                            type="datetime-local"
+                                            id="dueDate"
+                                            value={formData.dueDate}
+                                            onChange={(e) => handleFormChange('dueDate', e.target.value)}
+                                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                        />
+                                    </div>
+
+                                    <small className="text-xs text-gray-500 block">
+                                        Add dates to see tasks in calendar view
                                     </small>
                                 </div>
 
