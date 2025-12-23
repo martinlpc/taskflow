@@ -6,7 +6,11 @@ import Modal from "../components/Modal.jsx";
 
 export default function Tasks() {
     const [searchParams, setSearchParams] = useSearchParams()
-    const [formData, setFormData] = useState({ title: '', description: '' })
+    const [formData, setFormData] = useState({
+        title: '',
+        description: '',
+        tags: []
+    })
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
     const [loading, setLoading] = useState(false)
@@ -16,6 +20,8 @@ export default function Tasks() {
     const [filterStatus, setFilterStatus] = useState(searchParams.get('status') || 'all')
     const [filterPriority, setFilterPriority] = useState(searchParams.get('priority') || 'all')
     const [searchTerm, setSearchTerm] = useState('')
+    const [tagInput, setTagInput] = useState('')
+    const [filterTag, setFilterTag] = useState(searchParams.get('tag') || '')
 
     useEffect(() => {
         fetchTasks()
@@ -33,8 +39,12 @@ export default function Tasks() {
             newParams.set('priority', filterPriority)
         }
 
+        if (filterTag) {
+            newParams.set('tag', filterTag)
+        }
+
         setSearchParams(newParams)
-    }, [filterStatus, filterPriority, searchParams, setSearchParams])
+    }, [filterStatus, filterPriority, filterTag, searchParams, setSearchParams])
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -44,7 +54,12 @@ export default function Tasks() {
         }, 400)
 
         return () => clearTimeout(timeoutId)
-    }, [searchTerm, filterStatus, filterPriority])
+    }, [searchTerm, filterStatus, filterPriority, filterTag])
+
+    const getAllTags = () => {
+        const allTags = tasks.flatMap(task => task.tags || [])
+        return [...new Set(allTags)].sort()
+    }
 
     const fetchTasks = async () => {
         try {
@@ -52,6 +67,7 @@ export default function Tasks() {
             if (filterStatus !== 'all') filters.status = filterStatus
             if (filterPriority !== 'all') filters.priority = filterPriority
             if (searchTerm.trim()) filters.search = searchTerm.trim()
+            if (filterTag) filters.tags = filterTag
 
             const response = await getTasks(filters)
             setTasks(response.data.tasks)
@@ -69,14 +85,23 @@ export default function Tasks() {
         setEditingTask(task)
         setFormData({
             title: task.title,
-            description: task.description || ''
+            description: task.description || '',
+            tags: task.tags || []
         })
+        setError('')
+        setSuccess('')
         window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
+    const handleFormChange = (field, value) => {
+        setFormData({ ...formData, [field]: value })
+        if (error) setError('')
+        if (success) setSuccess('')
     }
 
     const handleCancel = () => {
         setEditingTask(null)
-        setFormData({ title: '', description: '' })
+        setFormData({ title: '', description: '', tags: [] })
         setError('')
         setSuccess('')
     }
@@ -134,6 +159,35 @@ export default function Tasks() {
         }
     }
 
+    const handleAddTag = (e) => {
+        e.preventDefault()
+        const newTag = tagInput.trim().toLocaleLowerCase()
+
+        if (newTag && !formData.tags.includes(newTag)) {
+            setFormData({ ...formData, tags: [...formData.tags, newTag] })
+            setTagInput('')
+            if (error) setError('')
+            if (success) setSuccess('')
+        }
+    }
+
+    const handleRemoveTag = (tagToRemove) => {
+        setFormData({
+            ...formData,
+            tags: formData.tags.filter(tag => tag !== tagToRemove)
+        })
+
+        if (error) setError('')
+        if (success) setSuccess('')
+    }
+
+    const handleTagKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault()
+            handleAddTag(e)
+        }
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError('')
@@ -141,6 +195,7 @@ export default function Tasks() {
 
         const title = formData.title.trim()
         const description = formData.description.trim()
+        const tags = formData.tags
 
         if (!title) {
             setError('Title is required')
@@ -150,15 +205,21 @@ export default function Tasks() {
         setLoading(true)
         try {
             if (editingTask) {
-                await updateTask(editingTask._id, { title, description, status: editingTask.status, priority: editingTask.priority })
+                await updateTask(editingTask._id, {
+                    title,
+                    description,
+                    status: editingTask.status,
+                    priority: editingTask.priority,
+                    tags
+                })
                 setSuccess('Task updated!')
             }
             else {
-                await createTask(title, description)
+                await createTask(title, description, tags)
                 setSuccess('Task created!')
             }
 
-            setFormData({ title: '', description: '' })
+            setFormData({ title: '', description: '', tags: [] })
             setEditingTask(null)
             fetchTasks()
 
@@ -203,7 +264,7 @@ export default function Tasks() {
                                         id="title"
                                         value={formData.title}
                                         placeholder="Enter task title..."
-                                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                        onChange={(e) => handleFormChange('title', e.target.value)}
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                                     />
                                 </div>
@@ -217,10 +278,60 @@ export default function Tasks() {
                                         placeholder="Add task details..."
                                         value={formData.description}
                                         id="description"
-                                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                        onChange={(e) => handleFormChange('description', e.target.value)}
                                         rows="4"
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none"
                                     />
+                                </div>
+
+                                {/* Tags input */}
+                                <div>
+                                    <label htmlFor="tags" className="block text-sm font-medium text-gray-700 mb-2">
+                                        Tags
+                                    </label>
+                                    {/* Existing tags */}
+                                    {formData.tags.length > 0 && (
+                                        <div className="flex flex-wrap gap-2 mb-2">
+                                            {formData.tags.map((tag, index) => (
+                                                <span
+                                                    key={index}
+                                                    className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200"
+                                                >
+                                                    #{tag}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleRemoveTag(tag)}
+                                                        className="hover:text-red-600"
+                                                    >
+                                                        x
+                                                    </button>
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    {/* Tag input */}
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            id="tags"
+                                            value={tagInput}
+                                            onChange={(e) => setTagInput(e.target.value)}
+                                            onKeyDown={handleTagKeyDown}
+                                            placeholder="Add a tag..."
+                                            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={handleAddTag}
+                                            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium rounded-lg transition-colors"
+                                        >
+                                            Add
+                                        </button>
+                                    </div>
+                                    <small className="text-gray-500 text-xs mt-1 block">
+                                        Press Enter or click Add to create a tag
+                                    </small>
                                 </div>
 
                                 {/* Messages */}
@@ -366,6 +477,45 @@ export default function Tasks() {
                                         High
                                     </button>
                                 </div>
+                            </div>
+
+                            {/* Tag Filter */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Filter by Tag
+                                </label>
+
+                                {getAllTags().length > 0 ? (
+                                    <div className="flex flex-wrap gap-2">
+                                        <button
+                                            onClick={() => setFilterTag('')}
+                                            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filterTag === ''
+                                                ? 'bg-gray-600 text-white'
+                                                : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                                                }`}
+                                        >
+                                            All Tags
+                                        </button>
+
+                                        {getAllTags().map((tag) => (
+                                            <button
+                                                key={tag}
+                                                onClick={() => setFilterTag(tag)}
+                                                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filterTag === tag
+                                                    ? 'bg-blue-600 text-white'
+                                                    : 'bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100'
+                                                    }`}
+                                            >
+                                                #{tag}
+                                            </button>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="text-gray-500 text-sm italic">
+                                        No tags available. Add tags to your tasks to filter them.
+                                    </p>
+                                )}
+
                             </div>
                         </div>
 
