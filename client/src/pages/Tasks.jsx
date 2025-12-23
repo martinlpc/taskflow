@@ -21,7 +21,7 @@ export default function Tasks() {
     const [filterPriority, setFilterPriority] = useState(searchParams.get('priority') || 'all')
     const [searchTerm, setSearchTerm] = useState('')
     const [tagInput, setTagInput] = useState('')
-    const [filterTag, setFilterTag] = useState('')
+    const [filterTag, setFilterTag] = useState(setSearchParams.get('tag') || '')
 
     useEffect(() => {
         fetchTasks()
@@ -39,8 +39,12 @@ export default function Tasks() {
             newParams.set('priority', filterPriority)
         }
 
+        if (filterTag) {
+            newParams.set('tag', filterTag)
+        }
+
         setSearchParams(newParams)
-    }, [filterStatus, filterPriority, searchParams, setSearchParams])
+    }, [filterStatus, filterPriority, filterTag, searchParams, setSearchParams])
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
