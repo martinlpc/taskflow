@@ -7,6 +7,7 @@ const localizer = momentLocalizer(moment)
 
 export default function Calendar({ tasks, onSelectTask }) {
     const [date, setDate] = useState(new Date())
+    const [view, setView] = useState('month')
 
     const events = tasks
         .filter(task => task.startDate && task.endDate)
@@ -46,7 +47,9 @@ export default function Calendar({ tasks, onSelectTask }) {
             startAccessor="start"
             endAccessor="end"
             date={date}
+            view={view}
             onNavigate={(newDate) => setDate(newDate)}
+            onView={(newView) => setView(newView)}
             style={{ height: '100%' }}
             eventPropGetter={eventStyleGetter}
             onSelectEvent={(event) => onSelectTask(event.resource)}
