@@ -21,7 +21,7 @@ export default function Tasks() {
     const [filterPriority, setFilterPriority] = useState(searchParams.get('priority') || 'all')
     const [searchTerm, setSearchTerm] = useState('')
     const [tagInput, setTagInput] = useState('')
-    const [filterTag, setFilterTag] = useState(setSearchParams.get('tag') || '')
+    const [filterTag, setFilterTag] = useState(searchParams.get('tag') || '')
 
     useEffect(() => {
         fetchTasks()
