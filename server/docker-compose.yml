@@ -1,0 +1,60 @@
+services:
+  # ============================================
+  # PostgreSQL Database
+  # ============================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: taskflow-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: taskflow
+      POSTGRES_PASSWORD: taskflow
+      POSTGRES_DB: taskflow_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taskflow -d taskflow_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - taskflow-network
+
+  # ============================================
+  # API Backend (Opcional - para desarrollo)
+  # ============================================
+  # Descomenta esto si querés correr la API también en Docker
+  # api:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: taskflow-api
+  #   restart: unless-stopped
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     DATABASE_URL: postgresql://taskflow:dev_password_123@postgres:5432/taskflow_db
+  #     JWT_SECRET: dev_jwt_secret_change_in_production
+  #     NODE_ENV: development
+  #     PORT: 3000
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   volumes:
+  #     # Hot reload para desarrollo
+  #     - ./src:/app/src
+  #     - ./prisma:/app/prisma
+  #     - ./server.js:/app/server.js
+  #   command: sh -c "npx prisma migrate deploy && npm run dev"
+  #   networks:
+  #     - taskflow-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  taskflow-network:
+    driver: bridge

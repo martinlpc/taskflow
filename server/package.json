@@ -1,22 +1,50 @@
 {
-  "name": "server",
-  "version": "1.0.0",
+  "name": "taskflow-api",
+  "version": "2.0.0",
   "type": "module",
-  "description": "",
+  "description": "TaskFlow API - Sistema de gestión de tareas con PostgreSQL",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "dev": "node --env-file .env --watch server.js"
+    "dev": "node --env-file .env --watch server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prisma:generate": "npx prisma generate",
+    "prisma:migrate": "npx prisma migrate dev",
+    "prisma:migrate:deploy": "npx prisma migrate deploy",
+    "prisma:studio": "npx prisma studio",
+    "prisma:seed": "node prisma/seed.js",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "docker:reset": "docker-compose down -v && docker-compose up -d"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "nodejs",
+    "express",
+    "postgresql",
+    "prisma",
+    "docker",
+    "jwt",
+    "api",
+    "rest"
+  ],
+  "author": "Martin Pacheco",
   "license": "MIT",
   "dependencies": {
+    "@prisma/adapter-pg": "^7.3.0",
+    "@prisma/client": "7.3.0",
     "bcryptjs": "3.0.2",
     "cors": "2.8.5",
+    "dotenv": "^17.2.4",
     "express": "5.1.0",
     "jsonwebtoken": "9.0.2",
-    "mongoose": "8.19.2"
+    "pg": "^8.18.0"
+  },
+  "devDependencies": {
+    "prisma": "7.3.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=10.0.0"
   }
 }
