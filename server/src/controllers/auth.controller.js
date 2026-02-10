@@ -1,6 +1,6 @@
-import User from '../models/user.model.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import prisma from '../config/database.js'
 
 export const register = async (req, res) => {
     try {
@@ -18,7 +18,10 @@ export const register = async (req, res) => {
             })
         }
 
-        const existingUser = await User.findOne({ email })
+        //const existingUser = await User.findOne({ email })
+        const existingUser = await prisma.user.findUnique({
+            where: { email }
+        })
         if (existingUser) {
             return res.status(400).json({
                 message: 'Email already registered'
@@ -28,16 +31,19 @@ export const register = async (req, res) => {
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt)
 
-        const user = await User.create({
-            name,
-            email,
-            password: hashedPassword
+        //const user = await User.create({
+        const user = await prisma.user.create({
+            data: {
+                name,
+                email,
+                password: hashedPassword
+            }
         })
 
         return res.status(201).json({
             message: 'User registered successfully',
             user: {
-                id: user._id,
+                id: user.id,
                 name: user.name,
                 email: user.email
             }
@@ -45,7 +51,7 @@ export const register = async (req, res) => {
 
     } catch (error) {
         // Handle duplicate key error from unique index on email
-        if (error && (error.code === 11000) && (error.keyPattern?.email || error.keyValue?.email)) {
+        if (error.code === 'P2002' && error.meta?.target?.includes('email')) {
             return res.status(400).json({ message: 'Email already registered' })
         }
         console.error(`Error while registering new user: ${error}`)
@@ -66,7 +72,10 @@ export const login = async (req, res) => {
         // Normalize email for lookup to match schema (lowercase + trim)
         email = email.trim().toLowerCase()
 
-        const user = await User.findOne({ email })
+        //const user = await User.findOne({ email })
+        const user = await prisma.user.findUnique({
+            where: { email }
+        })
         if (!user) {
             return res.status(401).json({ message: 'Invalid credentials' })
         }
@@ -77,7 +86,7 @@ export const login = async (req, res) => {
         }
 
         const token = jwt.sign(
-            { userId: user._id },
+            { userId: user.id },
             process.env.JWT_SECRET,
             { expiresIn: '7d' }
         )
@@ -87,7 +96,7 @@ export const login = async (req, res) => {
             user: {
                 name: user.name,
                 email: user.email,
-                id: user._id
+                id: user.id
             }
         })
 
