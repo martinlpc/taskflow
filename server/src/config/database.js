@@ -1,27 +1,32 @@
-import { PrismaClient } from '../generated/prisma_client/client.ts'
-//import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaClient } from '@prisma/client'
 
-// const adapter = new PrismaPg({
-//     connectionString: process.env.DATABASE_URL
-// })
-
-// const globalForPrisma = globalThis
-
-
-// const prisma = globalForPrisma ||
-//     new PrismaClient({
-//         adapter
-//     })
-
-// if (process.env.NODE_ENV !== 'production') {
-//     globalForPrisma.prisma = prisma
-// }
+const prismaLogEnv = process.env.PRISMA_LOG_LEVEL
+const prismaLogLevels = prismaLogEnv
+    ? prismaLogEnv.split(',').map((level) => level.trim()).filter(Boolean)
+    : (process.env.NODE_ENV === 'development'
+        ? ['query', 'error', 'warn']
+        : ['error'])
 
 const prisma = new PrismaClient({
-    log: process.env.NODE_ENV === 'development'
-        ? ['query', 'error', 'warn']
-        : ['error']
+    log: prismaLogLevels
 })
+
+let prismaConnected = false
+
+export const connectDB = async () => {
+    if (prismaConnected) {
+        return
+    }
+
+    try {
+        await prisma.$connect()
+        prismaConnected = true
+        console.log('Database connected')
+    } catch (error) {
+        console.error('Failed to connect to the database', error)
+        throw error
+    }
+}
 
 process.on('beforeExit', async () => {
     await prisma.$disconnect()

@@ -37,6 +37,7 @@ export const createTask = async (req, res) => {
 export const getTasks = async (req, res) => {
     try {
         const { status, priority, search, tags } = req.query
+        const userId = req.userId
 
         const where = { userId }
 
@@ -56,7 +57,12 @@ export const getTasks = async (req, res) => {
             orderBy: { createdAt: 'desc' }
         })
 
-        return res.status(200).json({ tasks })
+        const formattedTasks = tasks.map((task) => ({
+            ...task,
+            _id: task.id
+        }))
+
+        return res.status(200).json({ tasks: formattedTasks })
     } catch (error) {
         console.error('Error fetching tasks:', error);
         return res.status(500).json({ message: 'Error fetching tasks' })
@@ -67,6 +73,7 @@ export const updateTask = async (req, res) => {
     try {
         const { id } = req.params
         const { title, description, status, priority, tags, dueDate, startDate, endDate } = req.body
+        const userId = req.userId
 
         //const task = await Task.findById(id)
         const task = await prisma.task.findUnique({
@@ -98,7 +105,7 @@ export const updateTask = async (req, res) => {
             data
         })
 
-        return res.status(200).json(task)
+        return res.status(200).json(updatedTask)
     } catch (error) {
         console.error('Error updating task:', error);
         return res.status(500).json({ message: 'Error updating task' })
@@ -108,6 +115,7 @@ export const updateTask = async (req, res) => {
 export const deleteTask = async (req, res) => {
     try {
         const { id } = req.params
+        const userId = req.userId
 
         //const task = await Task.findById(id)
         const task = await prisma.task.findUnique({ where: { id: parseInt(id) } })
